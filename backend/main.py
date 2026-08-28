@@ -3,9 +3,12 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from schemas import Artwork
+from schemas import Artwork, AskRequest
 from service import get_artwork, search_artist_artworks
 
+from llm_service import ask_llm
+
+from evaluation import evaluate_museum_response
 
 logging.basicConfig(
     level=logging.INFO,
@@ -16,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 app = FastAPI(title="Met Museum Explorer")
+current_artworks: list[Artwork] = []
 
 
 app.add_middleware(
@@ -59,6 +63,10 @@ async def search(
             detail="Met Museum search failed",
         )
 
+    global current_artworks
+
+    current_artworks = result["results"]
+
     logger.info(
         "Search response: q=%s matches=%s next_offset=%s has_more=%s",
         q,
@@ -101,3 +109,58 @@ async def artwork(object_id: int):
     )
 
     return result
+
+@app.post("/museum-guide")
+async def museum_guide(request: AskRequest):
+
+    logger.info(
+        "Museum guide request: prompt=%s",
+        request.prompt,
+    )
+
+    try:
+        context = "\n\n".join(
+            [
+                (
+                    f"Title: {artwork.title}\n"
+                    f"Artist: {artwork.artist}\n"
+                    f"Nationality: {artwork.artist_nationality}\n"
+                    f"Date: {artwork.date}\n"
+                    f"Medium: {artwork.medium}\n"
+                    f"Dimensions: {artwork.dimensions}\n"
+                    f"Department: {artwork.department}\n"
+                    f"Gallery: {artwork.gallery}\n"
+                    f"Tags: {', '.join(artwork.tags)}"
+                )
+                for artwork in current_artworks
+            ]
+        )
+
+        answer = await ask_llm(
+            request.prompt,
+            context,
+        )
+
+        evaluate_museum_response(
+            request.prompt,
+            answer,
+            context,
+        )
+
+    except Exception:
+        logger.exception(
+            "Museum guide request failed"
+        )
+
+        raise HTTPException(
+            status_code=502,
+            detail="Museum guide request failed",
+        )
+
+    logger.info(
+        "Museum guide response generated"
+    )
+
+    return {
+        "answer": answer,
+    }

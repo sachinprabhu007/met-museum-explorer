@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { searchArtworks } from "./api/museum";
+import { searchArtworks, askMuseumGuide } from "./api/museum";
 import "./App.css";
+import ReactMarkdown from "react-markdown";
 
 const SEARCH_BATCH_SIZE = 70;
 
@@ -10,6 +11,9 @@ function App() {
   const [nextOffset, setNextOffset] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [guideLoading, setGuideLoading] = useState(false);
 
   async function handleSearch(event) {
     event.preventDefault();
@@ -31,6 +35,7 @@ function App() {
       console.log("Search results:", data);
 
       setArtworks(data.results ?? []);
+      setMessages([]);
       setNextOffset(data.next_offset ?? SEARCH_BATCH_SIZE);
       setHasMore(data.has_more ?? false);
     } catch (error) {
@@ -41,6 +46,38 @@ function App() {
       setHasMore(false);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleMuseumGuide(event) {
+    event.preventDefault();
+
+    const prompt = question.trim();
+
+    if (!prompt) {
+      return;
+    }
+
+    setGuideLoading(true);
+
+    try {
+      const data = await askMuseumGuide(prompt);
+
+      console.log("Museum guide response:", data);
+
+      setMessages((current) => [
+        ...current,
+        {
+          question: prompt,
+          answer: data.answer ?? "",
+        },
+      ]);
+      setQuestion("");
+    } catch (error) {
+      console.error("Museum guide failed:", error);
+      setAnswer("Unable to get a museum guide response.");
+    } finally {
+      setGuideLoading(false);
     }
   }
 
@@ -138,6 +175,49 @@ function App() {
           </article>
         ))}
       </section>
+
+  {artworks.length > 0 && (
+    <section className="museum-guide">
+      <h2>Museum Guide</h2>
+
+      <form onSubmit={handleMuseumGuide}>
+        <input
+          value={question}
+          onChange={(event) =>
+            setQuestion(event.target.value)
+          }
+          placeholder="Ask anything about these artworks"
+        />
+
+        <button
+          type="submit"
+          disabled={guideLoading}
+        >
+          {guideLoading ? "Thinking..." : "Ask"}
+        </button>
+      </form>
+
+      {messages.map((message, index) => (
+        <div
+          key={index}
+          className="museum-message"
+        >
+          <p>
+            <strong>You:</strong>{" "}
+            {message.question}
+          </p>
+
+          <div className="museum-answer">
+            <strong>Museum Guide:</strong>
+
+            <ReactMarkdown>
+              {message.answer}
+            </ReactMarkdown>
+          </div>
+        </div>
+      ))}
+    </section>
+  )}
 
       {hasMore && (
         <button

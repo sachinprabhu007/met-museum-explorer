@@ -15,3 +15,6 @@ class Artwork(BaseModel):
     department: str | None = None
     gallery: str | None = None
     tags: list[str] = []
+
+class AskRequest(BaseModel):
+    prompt: str
