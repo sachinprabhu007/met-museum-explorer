@@ -111,7 +111,8 @@ Measures whether the generated answer is supported by the retrieved Met Museum a
 
 The evaluation uses the same artwork context supplied to the Museum Guide:
 
-```Met Museum artwork data
+```
+Met Museum artwork data
         ↓
    retrieval_context
         ↓
