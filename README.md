@@ -23,7 +23,8 @@ information.
 
 ### 🤖 Museum Guide
 
-![Museum Guide](docs/screenshots/museum-guide.png)
+![Museum Guide](docs/screenshots/museum-guide-1.png)
+![Museum Guide](docs/screenshots/museum-guide-2.png)
 
 
 ## ✨ Features
