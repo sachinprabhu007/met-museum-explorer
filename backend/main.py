@@ -6,8 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from schemas import Artwork, AskRequest, EvaluateRequest
 from service import get_artwork, search_artist_artworks
 from llm_service import ask_llm
-
 from evaluation import evaluate_museum_response
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,7 +17,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-app = FastAPI(title="Met Museum Explorer")
+app = FastAPI(
+    title="Met Museum Explorer",
+    description=(
+        "An AI-powered museum explorer for searching, "
+        "exploring, and asking questions about The Met's art collection."
+    ),
+)
+
 current_artworks: list[Artwork] = []
 
 
@@ -122,6 +129,7 @@ async def museum_guide(request: AskRequest):
         context = "\n\n".join(
             [
                 (
+                    f"Object ID: {artwork.object_id}\n"
                     f"Title: {artwork.title}\n"
                     f"Artist: {artwork.artist}\n"
                     f"Nationality: {artwork.artist_nationality}\n"
@@ -136,7 +144,7 @@ async def museum_guide(request: AskRequest):
             ]
         )
 
-        answer = await ask_llm(
+        result = await ask_llm(
             request.prompt,
             context,
         )
@@ -152,12 +160,15 @@ async def museum_guide(request: AskRequest):
         )
 
     logger.info(
-        "Museum guide response generated"
+        "Museum guide response generated | fallback_used=%s",
+        result.get("fallback_used", False),
     )
 
     return {
-        "answer": answer,
+        "answer": result["answer"],
+        "context": result["context"],
     }
+
 
 @app.post("/evaluate")
 async def evaluate(request: EvaluateRequest):
@@ -173,6 +184,7 @@ async def evaluate(request: EvaluateRequest):
             request.answer,
             request.context,
         )
+
     except Exception:
         logger.exception(
             "Evaluation request failed"
