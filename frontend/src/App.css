@@ -167,20 +167,133 @@ button:disabled {
 }
 
 @media (max-width: 1000px) {
+  main {
+    padding: 30px;
+  }
+
   .gallery {
     grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
   }
 }
 
 @media (max-width: 700px) {
+  main {
+    padding: 24px 18px;
+  }
+
+  header {
+    margin-bottom: 30px;
+  }
+
+  h1 {
+    font-size: 38px;
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  header form,
+  .museum-guide form {
+    flex-direction: column;
+    max-width: none;
+  }
+
+  input,
+  button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   .gallery {
     grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+    padding-top: 24px;
+  }
+
+  .card img {
+    height: 240px;
+  }
+
+  .card h2 {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .card p {
+    font-size: 14px;
+  }
+
+  .museum-guide {
+    margin-top: 40px;
+    padding-top: 24px;
+  }
+
+  .museum-answer {
+    font-size: 15px;
+  }
+
+  .museum-answer table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .load-more {
+    margin: 40px auto;
+  }
+
+  footer {
+    margin-top: 60px;
   }
 }
 
 @media (max-width: 500px) {
+  main {
+    padding: 20px 14px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  .subtitle {
+    margin-bottom: 20px;
+  }
+
   .gallery {
     grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .card img {
+    height: 300px;
+  }
+
+  .card h2 {
+    font-size: 18px;
+  }
+
+  .museum-guide h2 {
+    font-size: 26px;
+  }
+
+  footer {
+    font-size: 13px;
+  }
+}
+
+@media (hover: none) {
+  .card:hover {
+    z-index: auto;
+  }
+
+  .card:hover img {
+    transform: none;
+    filter: none;
   }
 }
 
