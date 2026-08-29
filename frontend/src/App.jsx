@@ -100,10 +100,7 @@ function App() {
 
       console.log("Load more results:", data);
 
-      setArtworks((current) => [
-        ...current,
-        ...(data.results ?? []),
-      ]);
+      setArtworks((current) => [...current, ...(data.results ?? [])]);
 
       setNextOffset(data.next_offset ?? nextOffset);
       setHasMore(data.has_more ?? false);
@@ -130,17 +127,13 @@ function App() {
             placeholder="Search the collection"
           />
 
-          <button type="submit">
-            Search
-          </button>
+          <button type="submit">Search</button>
         </form>
       </header>
 
       {loading && <p>Loading...</p>}
 
-      {!loading && query && artworks.length === 0 && (
-        <p>No results found.</p>
-      )}
+      {!loading && query && artworks.length === 0 && <p>No results found.</p>}
 
       <section className="gallery">
         {artworks.map((artwork) => (
@@ -160,25 +153,16 @@ function App() {
             }
           >
             {artwork.image_small_url ? (
-              <img
-                src={artwork.image_small_url}
-                alt={artwork.title}
-              />
+              <img src={artwork.image_small_url} alt={artwork.title} />
             ) : (
-              <div className="image-placeholder">
-                No image available
-              </div>
+              <div className="image-placeholder">No image available</div>
             )}
 
             <h2>{artwork.title}</h2>
 
-            {artwork.artist && (
-              <p>{artwork.artist}</p>
-            )}
+            {artwork.artist && <p>{artwork.artist}</p>}
 
-            {artwork.date && (
-              <p>{artwork.date}</p>
-            )}
+            {artwork.date && <p>{artwork.date}</p>}
           </motion.article>
         ))}
       </section>
@@ -200,36 +184,25 @@ function App() {
           <form onSubmit={handleMuseumGuide}>
             <input
               value={question}
-              onChange={(event) =>
-                setQuestion(event.target.value)
-              }
+              onChange={(event) => setQuestion(event.target.value)}
               placeholder="Ask anything about these artworks"
             />
 
-            <button
-              type="submit"
-              disabled={guideLoading}
-            >
+            <button type="submit" disabled={guideLoading}>
               {guideLoading ? "Thinking..." : "Ask"}
             </button>
           </form>
 
           {messages.map((message, index) => (
-            <div
-              key={index}
-              className="museum-message"
-            >
+            <div key={index} className="museum-message">
               <p>
-                <strong>You:</strong>{" "}
-                {message.question}
+                <strong>You:</strong> {message.question}
               </p>
 
               <div className="museum-answer">
                 <strong>Museum Guide:</strong>
 
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {message.answer}
                 </ReactMarkdown>
               </div>
@@ -242,7 +215,33 @@ function App() {
         <p>Made with ❤️ by Sachin Prabhu</p>
 
         <p>
-          React · FastAPI · Groq · The Met Collection API
+          <a
+            href="https://react.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            React
+          </a>
+          {" · "}
+          <a
+            href="https://fastapi.tiangolo.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            FastAPI
+          </a>
+          {" · "}
+          <a href="https://groq.com/" target="_blank" rel="noopener noreferrer">
+            Groq
+          </a>
+          {" · "}
+          <a
+            href="https://metmuseum.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            The Met Collection API
+          </a>
         </p>
 
         <p>
