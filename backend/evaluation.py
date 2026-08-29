@@ -85,7 +85,7 @@ def evaluate_museum_response(
     question: str,
     answer: str,
     context: str,
-) -> None:
+) -> dict:
 
     test_case = LLMTestCase(
         input=question,
@@ -120,3 +120,14 @@ def evaluate_museum_response(
         faithfulness.score,
         faithfulness.reason,
     )
+
+    return {
+        "answer_relevancy": {
+            "score": metric.score,
+            "reason": metric.reason,
+        },
+        "faithfulness": {
+            "score": faithfulness.score,
+            "reason": faithfulness.reason,
+        },
+    }

@@ -168,7 +168,7 @@ async def evaluate(request: EvaluateRequest):
     )
 
     try:
-        evaluate_museum_response(
+        result = evaluate_museum_response(
             request.question,
             request.answer,
             request.context,
@@ -183,6 +183,4 @@ async def evaluate(request: EvaluateRequest):
             detail="Evaluation failed",
         )
 
-    return {
-        "status": "completed",
-    }
+    return result

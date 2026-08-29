@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { searchArtworks, askMuseumGuide } from "./api/museum";
 import "./App.css";
 import ReactMarkdown from "react-markdown";
@@ -118,6 +119,10 @@ function App() {
       <header>
         <h1>Met Museum Explorer</h1>
 
+        <p className="subtitle">
+          Search, explore, and ask questions about artworks from The Met.
+        </p>
+
         <form onSubmit={handleSearch}>
           <input
             value={query}
@@ -139,9 +144,20 @@ function App() {
 
       <section className="gallery">
         {artworks.map((artwork) => (
-          <article
+          <motion.article
             key={artwork.object_id}
             className="card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.3 }}
+            onClick={() =>
+              window.open(
+                `https://www.metmuseum.org/art/collection/search/${artwork.object_id}`,
+                "_blank",
+                "noopener,noreferrer",
+              )
+            }
           >
             {artwork.image_small_url ? (
               <img
@@ -163,9 +179,19 @@ function App() {
             {artwork.date && (
               <p>{artwork.date}</p>
             )}
-          </article>
+          </motion.article>
         ))}
       </section>
+
+      {hasMore && (
+        <button
+          className="load-more"
+          onClick={handleLoadMore}
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "Load more"}
+        </button>
+      )}
 
       {artworks.length > 0 && (
         <section className="museum-guide">
@@ -212,15 +238,23 @@ function App() {
         </section>
       )}
 
-      {hasMore && (
-        <button
-          className="load-more"
-          onClick={handleLoadMore}
-          disabled={loading}
-        >
-          {loading ? "Loading..." : "Load more"}
-        </button>
-      )}
+      <footer>
+        <p>Made with ❤️ by Sachin Prabhu</p>
+
+        <p>
+          React · FastAPI · Groq · The Met Collection API
+        </p>
+
+        <p>
+          <a
+            href="https://github.com/sachinprabhu007/met-museum-explorer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+        </p>
+      </footer>
     </main>
   );
 }
