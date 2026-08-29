@@ -223,6 +223,10 @@ function App() {
             React
           </a>
           {" · "}
+          <a href="https://vite.dev/" target="_blank" rel="noopener noreferrer">
+            Vite
+          </a>
+          {" · "}
           <a
             href="https://fastapi.tiangolo.com/"
             target="_blank"
@@ -241,6 +245,25 @@ function App() {
             rel="noopener noreferrer"
           >
             The Met Collection API
+          </a>
+        </p>
+
+        <p>
+          Deployed on{" "}
+          <a
+            href="https://vercel.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Vercel
+          </a>
+          {" · "}
+          <a
+            href="https://render.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Render
           </a>
         </p>
 

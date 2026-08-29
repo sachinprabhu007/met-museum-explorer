@@ -9,6 +9,23 @@ source. When that context is insufficient, the application falls back to
 **Groq Compound Mini with web search** to retrieve additional
 information.
 
+## 🚀 Live Demo
+
+**[Met Museum Explorer](https://met-museum-explorer.vercel.app/)**
+
+- **Frontend:** Vercel
+- **Backend:** Render
+- **API:** FastAPI
+
+### 🖼️ Museum Explorer
+
+![Met Museum Explorer](docs/screenshots/explorer.png)
+
+### 🤖 Museum Guide
+
+![Museum Guide](docs/screenshots/museum-guide.png)
+
+
 ## ✨ Features
 
 - 🔎 Search the Met Museum collection
@@ -34,6 +51,7 @@ information.
 -   **LLM Fallback:** Groq Compound Mini + web search
 -   **LLM Evaluation:** DeepEval
 -   **Museum API:** Metropolitan Museum of Art Collection API
+-   **Deployment:** Vercel, Render
 
 ## Architecture
 
