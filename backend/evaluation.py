@@ -51,6 +51,7 @@ class GroqEvaluationModel(DeepEvalBaseLLM):
                 response_format={
                     "type": "json_object"
                 },
+                max_completion_tokens=2048,
             )
         else:
             response = self.client.chat.completions.create(
@@ -61,10 +62,10 @@ class GroqEvaluationModel(DeepEvalBaseLLM):
                         "content": prompt,
                     }
                 ],
+                max_completion_tokens=2048,
             )
 
         return response.choices[0].message.content
-
 
     async def a_generate(
         self,

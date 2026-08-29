@@ -2,6 +2,7 @@ import { useState } from "react";
 import { searchArtworks, askMuseumGuide } from "./api/museum";
 import "./App.css";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const SEARCH_BATCH_SIZE = 70;
 
@@ -27,10 +28,7 @@ function App() {
     setLoading(true);
 
     try {
-      const data = await searchArtworks(
-        searchQuery,
-        0
-      );
+      const data = await searchArtworks(searchQuery, 0);
 
       console.log("Search results:", data);
 
@@ -72,10 +70,18 @@ function App() {
           answer: data.answer ?? "",
         },
       ]);
+
       setQuestion("");
     } catch (error) {
       console.error("Museum guide failed:", error);
-      setAnswer("Unable to get a museum guide response.");
+
+      setMessages((current) => [
+        ...current,
+        {
+          question: prompt,
+          answer: "Unable to get a museum guide response.",
+        },
+      ]);
     } finally {
       setGuideLoading(false);
     }
@@ -89,10 +95,7 @@ function App() {
     setLoading(true);
 
     try {
-      const data = await searchArtworks(
-        query,
-        nextOffset
-      );
+      const data = await searchArtworks(query, nextOffset);
 
       console.log("Load more results:", data);
 
@@ -101,18 +104,10 @@ function App() {
         ...(data.results ?? []),
       ]);
 
-      setNextOffset(
-        data.next_offset ?? nextOffset
-      );
-
-      setHasMore(
-        data.has_more ?? false
-      );
+      setNextOffset(data.next_offset ?? nextOffset);
+      setHasMore(data.has_more ?? false);
     } catch (error) {
-      console.error(
-        "Load more failed:",
-        error
-      );
+      console.error("Load more failed:", error);
     } finally {
       setLoading(false);
     }
@@ -126,9 +121,7 @@ function App() {
         <form onSubmit={handleSearch}>
           <input
             value={query}
-            onChange={(event) =>
-              setQuery(event.target.value)
-            }
+            onChange={(event) => setQuery(event.target.value)}
             placeholder="Search the collection"
           />
 
@@ -140,11 +133,9 @@ function App() {
 
       {loading && <p>Loading...</p>}
 
-      {!loading &&
-        query &&
-        artworks.length === 0 && (
-          <p>No results found.</p>
-        )}
+      {!loading && query && artworks.length === 0 && (
+        <p>No results found.</p>
+      )}
 
       <section className="gallery">
         {artworks.map((artwork) => (
@@ -176,48 +167,50 @@ function App() {
         ))}
       </section>
 
-  {artworks.length > 0 && (
-    <section className="museum-guide">
-      <h2>Museum Guide</h2>
+      {artworks.length > 0 && (
+        <section className="museum-guide">
+          <h2>Museum Guide</h2>
 
-      <form onSubmit={handleMuseumGuide}>
-        <input
-          value={question}
-          onChange={(event) =>
-            setQuestion(event.target.value)
-          }
-          placeholder="Ask anything about these artworks"
-        />
+          <form onSubmit={handleMuseumGuide}>
+            <input
+              value={question}
+              onChange={(event) =>
+                setQuestion(event.target.value)
+              }
+              placeholder="Ask anything about these artworks"
+            />
 
-        <button
-          type="submit"
-          disabled={guideLoading}
-        >
-          {guideLoading ? "Thinking..." : "Ask"}
-        </button>
-      </form>
+            <button
+              type="submit"
+              disabled={guideLoading}
+            >
+              {guideLoading ? "Thinking..." : "Ask"}
+            </button>
+          </form>
 
-      {messages.map((message, index) => (
-        <div
-          key={index}
-          className="museum-message"
-        >
-          <p>
-            <strong>You:</strong>{" "}
-            {message.question}
-          </p>
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className="museum-message"
+            >
+              <p>
+                <strong>You:</strong>{" "}
+                {message.question}
+              </p>
 
-          <div className="museum-answer">
-            <strong>Museum Guide:</strong>
+              <div className="museum-answer">
+                <strong>Museum Guide:</strong>
 
-            <ReactMarkdown>
-              {message.answer}
-            </ReactMarkdown>
-          </div>
-        </div>
-      ))}
-    </section>
-  )}
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {message.answer}
+                </ReactMarkdown>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
 
       {hasMore && (
         <button
@@ -225,9 +218,7 @@ function App() {
           onClick={handleLoadMore}
           disabled={loading}
         >
-          {loading
-            ? "Loading..."
-            : "Load more"}
+          {loading ? "Loading..." : "Load more"}
         </button>
       )}
     </main>

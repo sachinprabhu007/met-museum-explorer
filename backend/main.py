@@ -3,9 +3,8 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from schemas import Artwork, AskRequest
+from schemas import Artwork, AskRequest, EvaluateRequest
 from service import get_artwork, search_artist_artworks
-
 from llm_service import ask_llm
 
 from evaluation import evaluate_museum_response
@@ -110,6 +109,7 @@ async def artwork(object_id: int):
 
     return result
 
+
 @app.post("/museum-guide")
 async def museum_guide(request: AskRequest):
 
@@ -141,12 +141,6 @@ async def museum_guide(request: AskRequest):
             context,
         )
 
-        evaluate_museum_response(
-            request.prompt,
-            answer,
-            context,
-        )
-
     except Exception:
         logger.exception(
             "Museum guide request failed"
@@ -163,4 +157,32 @@ async def museum_guide(request: AskRequest):
 
     return {
         "answer": answer,
+    }
+
+@app.post("/evaluate")
+async def evaluate(request: EvaluateRequest):
+
+    logger.info(
+        "Evaluation request: question=%s",
+        request.question,
+    )
+
+    try:
+        evaluate_museum_response(
+            request.question,
+            request.answer,
+            request.context,
+        )
+    except Exception:
+        logger.exception(
+            "Evaluation request failed"
+        )
+
+        raise HTTPException(
+            status_code=502,
+            detail="Evaluation failed",
+        )
+
+    return {
+        "status": "completed",
     }

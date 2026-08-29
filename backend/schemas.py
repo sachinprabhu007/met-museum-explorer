@@ -18,3 +18,8 @@ class Artwork(BaseModel):
 
 class AskRequest(BaseModel):
     prompt: str
+
+class EvaluateRequest(BaseModel):
+    question: str
+    answer: str
+    context: str

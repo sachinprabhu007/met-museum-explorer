@@ -53,6 +53,51 @@ button {
   color: #666;
 }
 
+/* Museum Guide */
+
+.museum-guide {
+  margin-top: 20px;
+  max-width: 900px;
+}
+
+.museum-message {
+  margin-top: 20px;
+}
+
+.museum-answer {
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.museum-answer p {
+  margin: 8px 0;
+}
+
+/* Markdown tables */
+
+.museum-answer table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.museum-answer th,
+.museum-answer td {
+  padding: 8px 10px;
+  text-align: left;
+  border: 1px solid #444;
+}
+
+.museum-answer th {
+  font-weight: 600;
+}
+
+.museum-answer ul,
+.museum-answer ol {
+  padding-left: 25px;
+}
+
 .load-more {
   display: block;
   margin: 50px auto;
